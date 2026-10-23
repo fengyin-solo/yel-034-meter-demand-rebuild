@@ -297,6 +297,10 @@ def test_max_gap_below_lower_bound_is_rejected(root):
     result = run_task(root)
     assert result.returncode != 0 and (root / "output/bills.sqlite3").read_bytes() == before_db
     assert (root / "reports/billing-report.json").read_bytes() == before_report
+    document["max_gap_ms"] = 60000
+    path.write_text(json.dumps(document) + "\n", encoding="utf-8")
+    boundary = run_task(root)
+    assert boundary.returncode == 0
 
 
 def test_report_schema_and_meta_are_exact(root):
