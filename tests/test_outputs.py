@@ -101,7 +101,7 @@ def test_output_database_has_exact_tables(root):
 
 
 def test_boolean_config_is_rejected(root):
-    """题面：「布尔值不算整数」。"""
+    """题面：「布尔值不算整数」；「billing_end_ms: INTEGER greater than start」"""
     path = root / "config.json"
     document = json.loads(path.read_text(encoding="utf-8"))
     document["max_gap_ms"] = True
@@ -110,6 +110,14 @@ def test_boolean_config_is_rejected(root):
     before_report = (root / "reports/billing-report.json").read_bytes()
     result = run_task(root)
     assert result.returncode != 0 and (root / "output/bills.sqlite3").read_bytes() == before_db
+    assert (root / "reports/billing-report.json").read_bytes() == before_report
+    equal_window = json.loads(path.read_text(encoding="utf-8"))
+    equal_window["max_gap_ms"] = 60000
+    equal_window["billing_end_ms"] = equal_window["billing_start_ms"]
+    path.write_text(json.dumps(equal_window) + "\n", encoding="utf-8")
+    equal_result = run_task(root)
+    assert equal_result.returncode != 0
+    assert (root / "output/bills.sqlite3").read_bytes() == before_db
     assert (root / "reports/billing-report.json").read_bytes() == before_report
 
 
