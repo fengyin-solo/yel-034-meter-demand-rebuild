@@ -5,6 +5,8 @@ LOG_DIR=/logs/verifier
 REWARD_FILE="$LOG_DIR/reward.txt"
 STATUS_FILE="$LOG_DIR/verification-status.txt"
 TEST_LOG="$LOG_DIR/test-stdout.txt"
+TRUSTED_PYTHON=/usr/local/bin/python3
+TRUSTED_TIMEOUT=/usr/bin/timeout
 completed=0
 mkdir -p "$LOG_DIR"
 
@@ -39,7 +41,7 @@ write_status "INCOMPLETE: pytest has not completed"
 trap on_exit EXIT
 trap on_signal INT TERM HUP
 
-python3 -m pip install --no-cache-dir --no-index --find-links=/opt/wheels pytest==8.4.1 \
+"$TRUSTED_PYTHON" -m pip install --no-cache-dir --no-index --find-links=/opt/wheels pytest==8.4.1 \
     > /tmp/pytest-install.log 2>&1 || {
     cat /tmp/pytest-install.log
     write_status "INCOMPLETE: pytest installation failed"
@@ -50,10 +52,16 @@ python3 -m pip install --no-cache-dir --no-index --find-links=/opt/wheels pytest
 
 RESULT_XML=$(mktemp "$LOG_DIR/pytest-results.XXXXXX")
 rm -f "$RESULT_XML"
+SITE_PACKAGES=$(env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=/tmp \
+    "$TRUSTED_PYTHON" -I -S -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
 
 set +e
-timeout --signal=TERM --kill-after=10s 300s \
-    python3 -u -m pytest -v -p no:cacheprovider \
+env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=/tmp LANG=C.UTF-8 LC_ALL=C.UTF-8 \
+    PYTHONPATH="$SITE_PACKAGES:/tests" PYTHONNOUSERSITE=1 \
+    PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
+    "$TRUSTED_TIMEOUT" --signal=TERM --kill-after=10s 300s \
+    "$TRUSTED_PYTHON" -S -s -P -B -c 'import sys, pytest; raise SystemExit(pytest.main(sys.argv[1:]))' \
+    -v -s -p no:cacheprovider \
     --junitxml="$RESULT_XML" /tests/test_outputs.py > "$TEST_LOG" 2>&1
 rc=$?
 set -e
@@ -80,7 +88,8 @@ if [ ! -s "$RESULT_XML" ]; then
     exit 0
 fi
 
-if ! python3 /tests/score.py \
+if ! env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=/tmp \
+    "$TRUSTED_PYTHON" -I -S -B /tests/score.py \
     --config /tests/scoring.json \
     --junit "$RESULT_XML" \
     --report-out "$LOG_DIR/scoring-report.json" \

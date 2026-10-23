@@ -7,5 +7,9 @@ RUN mkdir -p /data/output /data/reports /logs/verifier && chmod 0755 /logs/verif
 COPY generate_data.py /tmp/generate_data.py
 COPY wheels/ /opt/wheels/
 COPY app/ /app/
-RUN python3 /tmp/generate_data.py && rm /tmp/generate_data.py && chown -R nobody:nogroup /data && chmod 0555 /app/rebuild_bills.py
+RUN python3 /tmp/generate_data.py \
+    && rm /tmp/generate_data.py \
+    && chown -R nobody:nogroup /data \
+    && chmod 0777 /data /data/output /data/reports \
+    && chmod 0555 /app/air_settlement.py
 CMD ["sleep", "infinity"]
