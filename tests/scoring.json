@@ -1,0 +1,123 @@
+{
+  "gate_tests": [
+    "test_outputs.py::test_script_exists_and_runs_without_old_outputs",
+    "test_outputs.py::test_baseline_report_totals",
+    "test_outputs.py::test_output_database_has_exact_tables",
+    "test_outputs.py::test_boolean_config_is_rejected",
+    "test_outputs.py::test_duplicate_config_key_is_rejected",
+    "test_outputs.py::test_extra_database_table_is_rejected"
+  ],
+  "schema_version": 1,
+  "tests": {
+    "test_outputs.py::test_account_energy_targets_must_partition_all_meters": {
+      "priority": "core",
+      "rationale": "account energy targets must partition all meters；这是任务的主交付路径，失败意味着核心业务结果不可用。",
+      "weight": 0.12
+    },
+    "test_outputs.py::test_account_meter_count_is_part_of_partition": {
+      "priority": "core",
+      "rationale": "account meter count is part of partition；这是任务的主交付路径，失败意味着核心业务结果不可用。",
+      "weight": 0.12
+    },
+    "test_outputs.py::test_calibration_order_is_enforced": {
+      "priority": "schema",
+      "rationale": "calibration order is enforced；这验证结构、类型或序列化外观，失败会使下游无法稳定消费结果。",
+      "weight": 0.026
+    },
+    "test_outputs.py::test_concurrent_runs_converge": {
+      "priority": "supporting",
+      "rationale": "concurrent runs converge；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
+      "weight": 0.018
+    },
+    "test_outputs.py::test_conflicting_duplicate_reading_is_counted": {
+      "priority": "core",
+      "rationale": "conflicting duplicate reading is counted；这是任务的主交付路径，失败意味着核心业务结果不可用。",
+      "weight": 0.12
+    },
+    "test_outputs.py::test_input_database_is_unchanged": {
+      "priority": "supporting",
+      "rationale": "input database is unchanged；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
+      "weight": 0.018
+    },
+    "test_outputs.py::test_large_site_finishes_within_public_limit": {
+      "priority": "boundary",
+      "rationale": "large site finishes within public limit；这验证公开边界和拒收口径，失败会产生越界输入或错误放行。",
+      "weight": 0.033
+    },
+    "test_outputs.py::test_long_interval_becomes_unbilled_gap": {
+      "priority": "supporting",
+      "rationale": "long interval becomes unbilled gap；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
+      "weight": 0.018
+    },
+    "test_outputs.py::test_max_gap_below_lower_bound_is_rejected": {
+      "priority": "boundary",
+      "rationale": "max gap below lower bound is rejected；这验证公开边界和拒收口径，失败会产生越界输入或错误放行。",
+      "weight": 0.033
+    },
+    "test_outputs.py::test_meter_kind_enum_is_enforced": {
+      "priority": "supporting",
+      "rationale": "meter kind enum is enforced；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
+      "weight": 0.018
+    },
+    "test_outputs.py::test_meter_schema_does_not_expose_account_id": {
+      "priority": "schema",
+      "rationale": "meter schema does not expose account id；这验证结构、类型或序列化外观，失败会使下游无法稳定消费结果。",
+      "weight": 0.026
+    },
+    "test_outputs.py::test_received_time_only_duplicate_is_not_conflict": {
+      "priority": "core",
+      "rationale": "received time only duplicate is not conflict；这是任务的主交付路径，失败意味着核心业务结果不可用。",
+      "weight": 0.12
+    },
+    "test_outputs.py::test_repeat_run_is_byte_stable": {
+      "priority": "recovery",
+      "rationale": "repeat run is byte stable；这验证失败、重跑或恢复不变量，失败会造成旧数据和台账不一致。",
+      "weight": 0.044
+    },
+    "test_outputs.py::test_report_directory_failure_preserves_old_output": {
+      "priority": "recovery",
+      "rationale": "report directory failure preserves old output；这验证失败、重跑或恢复不变量，失败会造成旧数据和台账不一致。",
+      "weight": 0.044
+    },
+    "test_outputs.py::test_report_is_canonical_bytes": {
+      "priority": "supporting",
+      "rationale": "report is canonical bytes；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
+      "weight": 0.018
+    },
+    "test_outputs.py::test_report_schema_and_meta_are_exact": {
+      "priority": "schema",
+      "rationale": "report schema and meta are exact；这验证结构、类型或序列化外观，失败会使下游无法稳定消费结果。",
+      "weight": 0.025
+    },
+    "test_outputs.py::test_report_totals_match_database": {
+      "priority": "core",
+      "rationale": "report totals match database；这是任务的主交付路径，失败意味着核心业务结果不可用。",
+      "weight": 0.12
+    },
+    "test_outputs.py::test_reset_allows_counter_drop": {
+      "priority": "supporting",
+      "rationale": "reset allows counter drop；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
+      "weight": 0.018
+    },
+    "test_outputs.py::test_reset_requires_unique_meter_mapping": {
+      "priority": "supporting",
+      "rationale": "reset requires unique meter mapping；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
+      "weight": 0.018
+    },
+    "test_outputs.py::test_reset_schema_requires_field_tag": {
+      "priority": "schema",
+      "rationale": "reset schema requires field tag；这验证结构、类型或序列化外观，失败会使下游无法稳定消费结果。",
+      "weight": 0.025
+    },
+    "test_outputs.py::test_tariff_coverage_is_enforced": {
+      "priority": "supporting",
+      "rationale": "tariff coverage is enforced；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
+      "weight": 0.018
+    }
+  },
+  "weight_policy": {
+    "basis": "business_priority",
+    "core_min_share": 0.5,
+    "version": 1
+  }
+}
