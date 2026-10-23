@@ -24,7 +24,7 @@ def config(root):
     except Exception as exc:raise BillingError(f'config: {exc}')from exc
     if not isinstance(o,dict) or set(o)!={'billing_start_ms','billing_end_ms','max_gap_ms'}:raise BillingError('config fields')
     a,b,g=o['billing_start_ms'],o['billing_end_ms'],o['max_gap_ms']
-    if not all(isint(x) for x in (a,b,g)) or a<0 or b<=a or not 60000<=g<=86400000:raise BillingError('config values')
+    if not all(isint(x) for x in (a,b,g)) or a<0 or not (a<b) or not 60000<=g<=86400000:raise BillingError('config values')
     return o
 EXPECTED={
 'meters':[('meter_id','TEXT',0,1),('kind','TEXT',1,0)],
